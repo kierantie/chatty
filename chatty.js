@@ -112,11 +112,11 @@ var calculate = function() {
     
     // Calculate the base rate from the word count
     var wordCountInt = Number.parseInt(ChattyCheckout.uiStorage.wordCount.val());
-    console.log(wordCountInt);
+    //console.log(wordCountInt);
     var wordCountMultiplier = Math.floor((wordCountInt - 1000) / 500);
-    console.log(wordCountMultiplier);
+    //console.log(wordCountMultiplier);
     var baseRateMultiplier = wordCountMultiplier * ChattyCheckout.parsedData.editor_extraRatePer500wo;
-    console.log(baseRateMultiplier);
+    //console.log(baseRateMultiplier);
     newBaseRate += baseRateMultiplier;
     
     // Calculate the express fee
@@ -124,7 +124,7 @@ var calculate = function() {
     if(ChattyCheckout.uiStorage.expressFee.is(':checked')) {
         addons += ChattyCheckout.parsedData.editor_nextDayTurnaroundExtra;
     }
-    console.log(addons);
+    //console.log(addons);
     //newBaseRate += addons;
     
     // Calculate the subtotal
