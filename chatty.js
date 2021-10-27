@@ -163,13 +163,13 @@ $( document ).ready(function() {
         ChattyCheckout.decodedData = atob(rawData);
     }
 
-    //console.log("decodedData = " + ChattyCheckout.decodedData);
+    console.log("decodedData = " + ChattyCheckout.decodedData);
 
     // Now parse the decoded data into an object
     ChattyCheckout.parsedData = JSON.parse(ChattyCheckout.decodedData);
     
     calculate();
 
-    //console.log(ChattyCheckout.parsedData);
+    console.log(ChattyCheckout.parsedData);
 });
 
