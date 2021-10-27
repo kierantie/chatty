@@ -4,7 +4,7 @@ window.onload = function() {
     for(var i = 0; i < anchors.length; i++) {
         var anchor = anchors[i];
         anchor.onclick = function() {
-            code = this.getAttribute('whenClicked');
+            var code = this.getAttribute('whenClicked');
             eval(code);   
         }
     }
@@ -80,49 +80,49 @@ function getAllUrlParams(url) {
 
 // CHATTYCALC 0.1
 // Set up the defaults for guests
-var parsedData = "";
-var decodedData = '{"memberID":"rQVvzX8Q","memberEmail":"kieran@chatty.so","editorID":"rectcd1lTygJvjmKn","editorName":"Chatty Crew","editorFName":"Chatty","editor_baseRate1000wo":129,"editor_extraRatePer500wo":50,"editor_pairEditingRatePerHour":100,"editor_nextDayTurnaroundExtra":50,"editor_consultingRatePerHour":-1,"editor_outlineRateFixed":-1}';
-
-// Set up which DOM IDs correspond to which values
-var uiStorage = {
-    memberID: $("#memberID"),
-    editorID: $("#editorID"),
-    editorFName: $(".editorFName"),
-    editorName: $(".editorName"),
-    contentType: $("[name='ContentType']"),
-    baseRate: $("#baseRate"),
-    addOnsRate: $("#addOnsRate"),
-    platformFee: $("#platformFee"),
-    subtotal: $("#subtotal"),
-    wordCount: $("#wordCount"),
-    expressFee: $("#expressFee"),
-    addOnsRate: $("#addOnsRate"),
+var ChattyCheckout = {
+    parsedData: "",
+    decodedData: '{"memberID":"rQVvzX8Q","memberEmail":"kieran@chatty.so","editorID":"rectcd1lTygJvjmKn","editorName":"Chatty Crew","editorFName":"Chatty","editor_baseRate1000wo":129,"editor_extraRatePer500wo":50,"editor_pairEditingRatePerHour":100,"editor_nextDayTurnaroundExtra":50,"editor_consultingRatePerHour":-1,"editor_outlineRateFixed":-1}',
+    uiStorage: {
+        memberID: $("#memberID"),
+        editorID: $("#editorID"),
+        editorFName: $(".editorFName"),
+        editorName: $(".editorName"),
+        contentType: $("[name='ContentType']"),
+        baseRate: $("#baseRate"),
+        addOnsRate: $("#addOnsRate"),
+        platformFee: $("#platformFee"),
+        subtotal: $("#subtotal"),
+        wordCount: $("#wordCount"),
+        expressFee: $("#expressFee"),
+        addOnsRate: $("#addOnsRate"),
+    },
 };
 
 var calculate = function() {
     // Zero everything
     var zero = 0;
-    uiStorage.baseRate.text(zero.toFixed(2));
-    uiStorage.addOnsRate.text(zero.toFixed(2));
-    uiStorage.platformFee.text(zero.toFixed(2));
-    uiStorage.subtotal.text(zero.toFixed(2));
+    ChattyCheckout.uiStorage.baseRate.text(zero.toFixed(2));
+    ChattyCheckout.uiStorage.addOnsRate.text(zero.toFixed(2));
+    ChattyCheckout.uiStorage.platformFee.text(zero.toFixed(2));
+    ChattyCheckout.uiStorage.subtotal.text(zero.toFixed(2));
     
     // Set the initial base rate
-    var newBaseRate = parsedData.editor_baseRate1000wo;
+    var newBaseRate = ChattyCheckout.parsedData.editor_baseRate1000wo;
     
     // Calculate the base rate from the word count
-    var wordCountInt = Number.parseInt(uiStorage.wordCount.val());
+    var wordCountInt = Number.parseInt(ChattyCheckout.uiStorage.wordCount.val());
     console.log(wordCountInt);
     var wordCountMultiplier = Math.floor((wordCountInt - 1000) / 500);
     console.log(wordCountMultiplier);
-    var baseRateMultiplier = wordCountMultiplier * parsedData.editor_extraRatePer500wo;
+    var baseRateMultiplier = wordCountMultiplier * ChattyCheckout.parsedData.editor_extraRatePer500wo;
     console.log(baseRateMultiplier);
     newBaseRate += baseRateMultiplier;
     
     // Calculate the express fee
     var addons = 0;
-    if(uiStorage.expressFee.is(':checked')) {
-        addons += parsedData.editor_nextDayTurnaroundExtra;
+    if(ChattyCheckout.uiStorage.expressFee.is(':checked')) {
+        addons += ChattyCheckout.parsedData.editor_nextDayTurnaroundExtra;
     }
     console.log(addons);
     //newBaseRate += addons;
@@ -135,39 +135,41 @@ var calculate = function() {
     subtotal += platformFee;
     
     // Update the UI
-    uiStorage.baseRate.text(newBaseRate.toFixed(2));
-    uiStorage.addOnsRate.text(addons.toFixed(2));
-    uiStorage.subtotal.text(subtotal.toFixed(2));
-    uiStorage.platformFee.text(platformFee.toFixed(2));
+    ChattyCheckout.uiStorage.baseRate.text(newBaseRate.toFixed(2));
+    ChattyCheckout.uiStorage.addOnsRate.text(addons.toFixed(2));
+    ChattyCheckout.uiStorage.subtotal.text(subtotal.toFixed(2));
+    ChattyCheckout.uiStorage.platformFee.text(platformFee.toFixed(2));
 };
 
-uiStorage.wordCount.change(function() {
+ChattyCheckout.uiStorage.wordCount.change(function() {
     calculate();
 });
 
-uiStorage.contentType.change(function() {
+ChattyCheckout.uiStorage.contentType.change(function() {
     calculate();
 });
 
-uiStorage.expressFee.change(function() {
+ChattyCheckout.uiStorage.expressFee.change(function() {
     calculate();
 });
 
 
 $( document ).ready(function() {
     // Get the prefill data and decode it (comment out if testing)
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
     if(urlParams.has('data')) {
         const rawData = urlParams.get('data');
-        decodedData = atob(rawData);
+        ChattyCheckout.decodedData = atob(rawData);
     }
 
-    //console.log("decodedData = " + decodedData);
+    //console.log("decodedData = " + ChattyCheckout.decodedData);
 
     // Now parse the decoded data into an object
-    parsedData = JSON.parse(decodedData);
+    ChattyCheckout.parsedData = JSON.parse(ChattyCheckout.decodedData);
     
     calculate();
 
-    //console.log(parsedData);
+    //console.log(ChattyCheckout.parsedData);
 });
 
